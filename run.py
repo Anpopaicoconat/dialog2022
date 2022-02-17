@@ -62,7 +62,7 @@ epoch = 3
 print_freq = 500
 batch_size = 1
 max_len = 256
-accumulation_steps = 64
+accumulation_steps = 2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir=''
@@ -127,7 +127,7 @@ for i_epoch in range(epoch):
             optimizer.step()
             optimizer.zero_grad()
             
-        if i_batch % print_freq == 0 or 1:
+        if i_batch % print_freq == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
         
