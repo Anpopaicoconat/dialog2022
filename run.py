@@ -127,7 +127,7 @@ for i_epoch in range(epoch):
             optimizer.step()
             optimizer.zero_grad()
             
-        if i_batch % print_freq == 0:
+        if i_batch % print_freq == 0 or 1:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
         
