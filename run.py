@@ -126,11 +126,11 @@ for i_epoch in range(epoch):
         out = model(**batch, labels=labels)
         logits = out.logits
         pred = logits.argmax(axis=1).to('cpu').detach()
-        accs += sum(pred == labels.to('cpu').detach()).double()[0]
+        accs += sum(pred == labels.to('cpu').detach()).double()
         ns += len(pred)
 
         loss = out.loss
-        losses += loss.to('cpu').detach()[0]
+        losses += loss.to('cpu').detach()
         (loss / accumulation_steps).backward()
         
         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
@@ -159,7 +159,7 @@ for i_epoch in range(epoch):
         out = model(**batch) #, labels=labels
         logits = out.logits.to('cpu')
         pred = logits.argmax(axis=1)
-        val_accs += torch.sum((pred == labels.to('cpu')).double())[0]
+        val_accs += torch.sum((pred == labels.to('cpu')).double())
         val_ns += len(pred)
 
         #loss = out.loss.to('cpu')
