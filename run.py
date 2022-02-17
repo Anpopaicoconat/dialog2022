@@ -109,31 +109,32 @@ for i_epoch in range(epoch):
     losses = 0
     accs = 0
     ns = 0
-    # for batch in tqdm(train_loader):
-#         i_batch+=1
-#         batch = {k:batch[k].to(model.device) for k in batch}
-#         labels = batch.pop('Class')
-#         out = model(**batch, labels=labels)
-#         logits = out.logits
-#         pred = logits.argmax(axis=1)
-#         accs += torch.sum((pred == labels).double())
-#         ns += len(pred)
+    for batch in tqdm(train_loader):
+        i_batch+=1
+        batch = {k:batch[k].to(model.device) for k in batch}
+        labels = batch.pop('Class')
+        out = model(**batch, labels=labels)
+        logits = out.logits
+        pred = logits.argmax(axis=1)
+        accs += torch.sum((pred == labels).double())
+        ns += len(pred)
 
-#         loss = out.loss
-#         losses += loss
-#         (loss / accumulation_steps).backward()
+        loss = out.loss
+        losses += loss
+        (loss / accumulation_steps).backward()
         
-#         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
-#             optimizer.step()
-#             optimizer.zero_grad()
+        if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
+            optimizer.step()
+            optimizer.zero_grad()
             
-#         if i_batch % print_freq == 0:
-#             print('loss:', losses/ns, 'acc:', accs/ns)
+        if i_batch % print_freq == 0:
+            print('loss:', losses/ns, 'acc:', accs/ns)
 
         
-#     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
-#     torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
+    print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
+    torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
     torch.cuda.empty_cache()
+    
     #val
     model.eval()
     val_i_batch = 0
@@ -156,6 +157,7 @@ for i_epoch in range(epoch):
         
         if val_i_batch % print_freq == 0:
             print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
-    print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10)
+            
+    print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
     
     
