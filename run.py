@@ -56,8 +56,9 @@ class Metric: # metric class for storing metrics (accuracy, loss)
         for key in self.storage:
             self.storage[key] = np.mean(self.storage[key])
         return self.storage.items()
-        
-print_freq = 100
+
+epoch = 3
+print_freq = 500
 batch_size = 8
 max_len = 256
 accumulation_steps = 8
@@ -129,6 +130,7 @@ for i_epoch in range(epoch):
         optimizer.step()
         optimizer.zero_grad()
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
+    torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
     #val
     val_i = 0
     val_losses = 0
@@ -150,3 +152,5 @@ for i_epoch in range(epoch):
         if val_i % print_freq == 0:
             print('val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns)
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10)
+    
+    
