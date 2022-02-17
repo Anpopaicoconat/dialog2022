@@ -60,9 +60,9 @@ class Metric: # metric class for storing metrics (accuracy, loss)
 
 epoch = 3
 print_freq = 500
-batch_size = 4
+batch_size = 1
 max_len = 256
-accumulation_steps = 16
+accumulation_steps = 64
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir=''
