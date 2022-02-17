@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import pandas as pd
 import numpy as np
 import transformers 
-from transformers import GPT2Tokenizer, GPT2ForSequenceClassification
+
 from tqdm.notebook import tqdm
 from sklearn.preprocessing import LabelEncoder
 
@@ -74,10 +74,10 @@ le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
 
-tokenizer = GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
+tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
 tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
-model = GPT2ForSequenceClassification.from_pretrained('ru_gpt_large', num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
+model = transformers.GPT2ForSequenceClassification.from_pretrained('ru_gpt_large', num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
 model.resize_token_embeddings(len(tokenizer))
 model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
