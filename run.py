@@ -59,10 +59,10 @@ class Metric: # metric class for storing metrics (accuracy, loss)
         return self.storage.items()
 
 epoch = 3
-print_freq = 500
+print_freq = 100
 batch_size = 1
 max_len = 256
-accumulation_steps = 2
+accumulation_steps = 64
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir=''
@@ -83,7 +83,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 2e-5
-UNFREEZE_LAST_N = 6
+UNFREEZE_LAST_N = 8
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
 for i, m in enumerate(model.transformer.h):        
@@ -95,11 +95,6 @@ for i, m in enumerate(model.transformer.h):
 
 for parameter in model.transformer.ln_f.parameters():        
     parameter.requires_grad = True
-try:
-    for parameter in model.lm_head.parameters():        
-        parameter.requires_grad = True
-except BaseException:
-    print('no lm head')
 
 optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                                lr = lr, # default is 5e-5, our notebook had 2e-5
@@ -142,7 +137,7 @@ for i_epoch in range(epoch):
             optimizer.step()
             optimizer.zero_grad()
             
-        if i_batch % print_freq == 0:
+        if i_batch//accumulation_steps % print_freq == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
         
@@ -170,7 +165,7 @@ for i_epoch in range(epoch):
         #loss = out.loss.to('cpu')
         #val_losses += loss
         
-        if val_i_batch % print_freq == 0:
+        if val_i_batch//accumulation_steps % print_freq == 0:
             print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
             
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
