@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import transformers 
 
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
 
 class collate_class():
