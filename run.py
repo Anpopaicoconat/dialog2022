@@ -83,7 +83,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 2e-5
-UNFREEZE_LAST_N = 12
+UNFREEZE_LAST_N = 64
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
 for i, m in enumerate(model.transformer.h):        
@@ -126,11 +126,11 @@ for i_epoch in range(epoch):
         out = model(**batch, labels=labels)
         logits = out.logits
         pred = logits.argmax(axis=1).to('cpu').detach()
-        accs += sum(pred == labels.to('cpu').detach()).double()
+        accs += sum(pred == labels.to('cpu').detach()).double()[0]
         ns += len(pred)
 
         loss = out.loss
-        losses += loss.to('cpu').detach()
+        losses += loss.to('cpu').detach()[0]
         (loss / accumulation_steps).backward()
         
         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
@@ -159,7 +159,7 @@ for i_epoch in range(epoch):
         out = model(**batch) #, labels=labels
         logits = out.logits.to('cpu')
         pred = logits.argmax(axis=1)
-        val_accs += torch.sum((pred == labels.to('cpu')).double())
+        val_accs += torch.sum((pred == labels.to('cpu')).double())[0]
         val_ns += len(pred)
 
         #loss = out.loss.to('cpu')
