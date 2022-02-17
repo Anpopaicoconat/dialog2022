@@ -119,8 +119,8 @@ for i_epoch in range(epoch):
         accs += torch.sum((pred == labels.detach().to('cpu')).double())
         ns += len(pred)
 
-        loss = out.loss.detach().to('cpu')
-        losses += loss
+        loss = out.loss
+        losses += loss.detach().to('cpu')
         (loss / accumulation_steps).backward()
         
         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
