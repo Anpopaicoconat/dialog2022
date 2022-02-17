@@ -107,7 +107,7 @@ for i_epoch in range(epoch):
     accs = 0
     ns = 0
     for batch in tqdm(train_loader):
-        ii_batch+=1
+        i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         out = model(**batch, labels=labels)
