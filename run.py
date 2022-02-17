@@ -145,17 +145,17 @@ for i_epoch in range(epoch):
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
 
-        out = model(**batch, labels=labels)
+        out = model(**batch) #, labels=labels
         logits = out.logits.to('cpu')
         pred = logits.argmax(axis=1)
         val_accs += torch.sum((pred == labels.to('cpu')).double())
         val_ns += len(pred)
 
-        loss = out.loss.to('cpu')
-        val_losses += loss
+        #loss = out.loss.to('cpu')
+        #val_losses += loss
         
         if val_i_batch % print_freq == 0:
-            print('val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns)
+            print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10)
     
     
