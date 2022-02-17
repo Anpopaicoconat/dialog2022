@@ -124,20 +124,20 @@ for i_epoch in range(epoch):
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         out = model(**batch, labels=labels)
-        logits = out.logits.detach().to('cpu')
-        pred = logits.argmax(axis=1)
-        accs += torch.sum((pred == labels.detach().to('cpu')).double())
+        logits = out.logits
+        pred = logits.argmax(axis=1).to('cpu').detach()
+        accs += sum(pred == labels.to('cpu').detach()).double()
         ns += len(pred)
 
         loss = out.loss
-        losses += loss.detach().to('cpu')
+        losses += loss.to('cpu').detach()
         (loss / accumulation_steps).backward()
         
         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
             optimizer.step()
             optimizer.zero_grad()
             
-        if i_batch//accumulation_steps % print_freq == 0:
+        if i_batch % (print_freq * accumulation_steps) == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
         
