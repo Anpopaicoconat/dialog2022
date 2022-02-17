@@ -59,7 +59,7 @@ class Metric: # metric class for storing metrics (accuracy, loss)
         return self.storage.items()
 
 epoch = 3
-print_freq = 100
+print_freq = 10
 batch_size = 1
 max_len = 256
 accumulation_steps = 64
@@ -83,7 +83,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 2e-5
-UNFREEZE_LAST_N = 8
+UNFREEZE_LAST_N = 12
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
 for i, m in enumerate(model.transformer.h):        
