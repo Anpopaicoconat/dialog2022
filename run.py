@@ -120,7 +120,7 @@ for i_epoch in range(epoch):
         losses += loss
         (loss / accumulation_steps).backward()
         
-        if (i_batch % accum_iter == 0) or (i_batch == len(data_loader)):
+        if (i_batch % accumulation_steps == 0) or (i_batch == len(data_loader)):
             optimizer.step()
             optimizer.zero_grad()
             
