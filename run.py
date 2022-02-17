@@ -120,7 +120,7 @@ for i_epoch in range(epoch):
         losses += loss
         (loss / accumulation_steps).backward()
         
-        if (i_batch % accumulation_steps == 0) or (i_batch == len(data_loader)):
+        if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
             optimizer.step()
             optimizer.zero_grad()
             
@@ -137,7 +137,7 @@ for i_epoch in range(epoch):
     val_losses = 0
     val_accs = 0
     val_ns = 0    
-    for batch in tqdm(val):
+    for batch in tqdm(val_loader):
         val_i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
