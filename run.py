@@ -127,9 +127,7 @@ for i_epoch in range(epoch):
         if i_batch % print_freq == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
-        loss.backward()
-        optimizer.step()
-        optimizer.zero_grad()
+        
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
     torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
     #val
