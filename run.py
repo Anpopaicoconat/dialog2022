@@ -102,12 +102,12 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=F
 
 
 for i_epoch in range(epoch):
-    i = 0
+    i_batch = 0
     losses = 0
     accs = 0
     ns = 0
     for batch in tqdm(train_loader):
-        i+=1
+        ii_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         out = model(**batch, labels=labels)
@@ -124,7 +124,7 @@ for i_epoch in range(epoch):
             optimizer.step()
             optimizer.zero_grad()
             
-        if i % print_freq == 0:
+        if i_batch % print_freq == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
 
         loss.backward()
@@ -133,12 +133,12 @@ for i_epoch in range(epoch):
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
     torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
     #val
-    val_i = 0
+    val_i_batch = 0
     val_losses = 0
     val_accs = 0
     val_ns = 0    
     for batch in tqdm(val):
-        val_i+=1
+        val_i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         out = model(**batch, labels=labels)
@@ -150,7 +150,7 @@ for i_epoch in range(epoch):
         loss = out.loss
         val_losses += loss
         
-        if val_i % print_freq == 0:
+        if val_i_batch % print_freq == 0:
             print('val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns)
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_loss:', val_losses/val_ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10)
     
