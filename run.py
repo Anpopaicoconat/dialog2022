@@ -139,13 +139,13 @@ for i_epoch in range(epoch):
     val_ns = 0    
     for batch in tqdm(val_loader):
         val_i_batch+=1
-        labels = batch.pop('Class')
         batch = {k:batch[k].to(model.device) for k in batch}
+        labels = batch.pop('Class')
 
         out = model(**batch, labels=labels)
         logits = out.logits.to('cpu')
         pred = logits.argmax(axis=1)
-        val_accs += torch.sum((pred == labels).double())
+        val_accs += torch.sum((pred == labels.to('cpu')).double())
         val_ns += len(pred)
 
         loss = out.loss.to('cpu')
