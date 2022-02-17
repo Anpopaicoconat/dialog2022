@@ -102,7 +102,9 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=F
 
 print('\nload ru_gpt_bi-classifier')
 model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
+
 for i_epoch in range(epoch):
+    model.train()
     i_batch = 0
     losses = 0
     accs = 0
@@ -133,6 +135,7 @@ for i_epoch in range(epoch):
 #     torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
     torch.cuda.empty_cache()
     #val
+    model.eval()
     val_i_batch = 0
     val_losses = 0
     val_accs = 0
