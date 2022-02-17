@@ -83,7 +83,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 2e-5
-UNFREEZE_LAST_N = 64
+UNFREEZE_LAST_N = 32
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
 for i, m in enumerate(model.transformer.h):        
