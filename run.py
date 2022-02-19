@@ -168,7 +168,7 @@ for i_epoch in range(epoch):
         
         if val_i_batch % (print_freq * accumulation_steps) == 0:
             print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
-            
+    print('val_acc:', val_accs/val_ns)
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
     
     
