@@ -62,7 +62,7 @@ epoch = 3
 print_freq = 500
 batch_size = 1
 max_len = 256
-accumulation_steps = 64
+accumulation_steps = 2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir=''
@@ -83,7 +83,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 2e-5
-UNFREEZE_LAST_N = 16
+UNFREEZE_LAST_N = 18
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
 for i, m in enumerate(model.transformer.h):        
