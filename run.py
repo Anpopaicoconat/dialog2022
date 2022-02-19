@@ -62,7 +62,7 @@ epoch = 3
 print_freq = 500
 batch_size = 1
 max_len = 256
-accumulation_steps = 2
+accumulation_steps = 128
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir=''
@@ -109,7 +109,8 @@ collate_fn = collate_class(padding='max_length', max_length=max_len, truncation=
 train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-
+print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
+      
 print('\nload ru_gpt_bi-classifier')
 model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
 
