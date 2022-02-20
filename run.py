@@ -65,7 +65,7 @@ max_len = 256
 accumulation_steps = 128
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-data_dir='multi'
+data_dir='multi/'
 train = pd.read_csv(data_dir + 'train.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
