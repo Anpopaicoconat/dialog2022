@@ -146,7 +146,7 @@ for i_epoch in range(epoch):
             optimizer.zero_grad()
             
         if i_batch % (print_freq * accumulation_steps) == 0:
-            train_loader.set_postfix({'loss': losses/ns, 'acc': accs/ns})
+            train_loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
     scheduler.step()
     
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
@@ -173,7 +173,7 @@ for i_epoch in range(epoch):
         #val_losses += loss
         
         if val_i_batch % (print_freq * accumulation_steps) == 0:
-            val_loader.set_postfix({'val_acc': val_accs/val_ns})
+            val_loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
     if val_accs/val_ns > last_val_accs:
         last_val_accs = val_accs/val_ns
