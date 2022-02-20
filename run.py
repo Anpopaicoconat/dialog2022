@@ -110,9 +110,10 @@ train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
-      
-print('\nload ru_gpt_bi-classifier')
-model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
+
+model_name = "ru_gpt_multi-classifier.pt"
+#model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
+print(model_name)
 
 for i_epoch in range(epoch):
     model.train()
@@ -133,7 +134,7 @@ for i_epoch in range(epoch):
         loss = out.loss
         losses += loss.to('cpu').detach()
         (loss / accumulation_steps).backward()
-#        
+        
         if (i_batch % accumulation_steps == 0) or (i_batch == len(train_loader)):
             optimizer.step()
             optimizer.zero_grad()
@@ -142,7 +143,7 @@ for i_epoch in range(epoch):
             print('loss:', losses/ns, 'acc:', accs/ns)
         
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
-    torch.save(model.state_dict(), "ru_gpt_bi-classifier.pt")
+    torch.save(model.state_dict(), model_name)
     torch.cuda.empty_cache()
     
     #val
