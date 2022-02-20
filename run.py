@@ -82,7 +82,7 @@ model.resize_token_embeddings(len(tokenizer))
 model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
-lr = 2e-5
+lr = 5e-5
 UNFREEZE_LAST_N = 0
 for param in list(model.parameters())[:-1]:
     param.requires_grad = False
@@ -111,10 +111,14 @@ val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=Fal
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
 
+t_total = len(train_loader) // accumulation_steps
+scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
+
 model_name = "ru_gpt_multi-classifier.pt"
 #model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
 print(model_name)
 
+last_val_accs = 0.4540
 for i_epoch in range(epoch):
     model.train()
     i_batch = 0
@@ -141,9 +145,9 @@ for i_epoch in range(epoch):
             
         if i_batch % (print_freq * accumulation_steps) == 0:
             print('loss:', losses/ns, 'acc:', accs/ns)
-        
+    scheduler.step()
+    
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
-    torch.save(model.state_dict(), model_name)
     torch.cuda.empty_cache()
     
     #val
@@ -169,5 +173,9 @@ for i_epoch in range(epoch):
         if val_i_batch % (print_freq * accumulation_steps) == 0:
             print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
+    if vall_accs/val_ns > last_val_accs:
+        last_val_accs = vall_accs/val_ns
+        print('model saved')
+        torch.save(model.state_dict(), model_name)
     
     
