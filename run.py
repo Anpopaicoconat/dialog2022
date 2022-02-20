@@ -176,7 +176,7 @@ for i_epoch in range(epoch):
             val_loader.set_postfix({'val_acc': val_accs/val_ns})
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
     if val_accs/val_ns > last_val_accs:
-        last_val_accs = vall_accs/val_ns
+        last_val_accs = val_accs/val_ns
         print('model saved')
         torch.save(model.state_dict(), model_name)
     
