@@ -106,9 +106,11 @@ val = TextDataset(val, le=le)
 test = TextDataset(test, le=le)
 
 collate_fn = collate_class(padding='max_length', max_length=max_len, truncation=True)
-train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+train_loader = tqdm(torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=False, collate_fn=collate_fn))
+val_loader = tqdm(torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn))
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+train_loader.set_description('train')
+val_loader.set_description('val')
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
 
 t_total = len(train_loader) // accumulation_steps
@@ -125,7 +127,7 @@ for i_epoch in range(epoch):
     losses = 0
     accs = 0
     ns = 0
-    for batch in tqdm(train_loader):
+    for batch in train_loader:
         i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
@@ -144,7 +146,7 @@ for i_epoch in range(epoch):
             optimizer.zero_grad()
             
         if i_batch % (print_freq * accumulation_steps) == 0:
-            print('loss:', losses/ns, 'acc:', accs/ns)
+            train_loader.set_postfix({'loss': losses/ns, 'acc': accs/ns})
     scheduler.step()
     
     print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
@@ -156,7 +158,7 @@ for i_epoch in range(epoch):
     val_losses = 0
     val_accs = 0
     val_ns = 0    
-    for batch in tqdm(val_loader):
+    for batch in val_loader:
         val_i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
@@ -171,9 +173,9 @@ for i_epoch in range(epoch):
         #val_losses += loss
         
         if val_i_batch % (print_freq * accumulation_steps) == 0:
-            print('val_acc:', val_accs/val_ns) #'val_loss:', val_losses/val_ns, 
+            val_loader.set_postfix({'val_acc': val_accs/val_ns})
     print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
-    if vall_accs/val_ns > last_val_accs:
+    if val_accs/val_ns > last_val_accs:
         last_val_accs = vall_accs/val_ns
         print('model saved')
         torch.save(model.state_dict(), model_name)
