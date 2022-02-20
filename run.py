@@ -115,7 +115,7 @@ t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
 
 model_name = "ru_gpt_multi-classifier.pt"
-#model.load_state_dict(torch.load('ru_gpt_bi-classifier.pt')) 
+model.load_state_dict(torch.load('ru_gpt_multi-classifier.pt')) 
 print(model_name)
 
 last_val_accs = 0.4540
