@@ -90,15 +90,15 @@ model = model = transformers.RobertaForSequenceClassification.from_pretrained(mo
 model.to(device)
 
 lr = 5e-5
-UNFREEZE_LAST_N = 0
-for param in list(model.parameters())[:-1]:
-    param.requires_grad = False
-for i, m in enumerate(model.transformer.h):        
+#UNFREEZE_LAST_N = 0
+#for param in list(model.parameters())[:-1]:
+#    param.requires_grad = False
+#for i, m in enumerate(model.transformer.h):        
     #Only un-freeze the last n transformer blocks
-    if i+1 > len(model.transformer.h) - UNFREEZE_LAST_N:
-        print("un-freeze block number {} ".format(i+1))
-        for parameter in m.parameters():
-            parameter.requires_grad = True 
+#    if i+1 > len(model.transformer.h) - UNFREEZE_LAST_N:
+#        print("un-freeze block number {} ".format(i+1))
+#        for parameter in m.parameters():
+#            parameter.requires_grad = True 
 
 #for parameter in model.transformer.ln_f.parameters():        
 #    parameter.requires_grad = True
