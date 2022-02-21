@@ -73,7 +73,7 @@ val = pd.read_csv(data_dir + 'val.csv')
 le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
-model_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
+models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 
 #gpt
 #tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
