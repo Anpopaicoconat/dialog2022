@@ -160,8 +160,6 @@ for i_epoch in range(epoch):
         if i_batch % (print_freq * accumulation_steps) == 0:
             loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
     scheduler.step()
-    
-    print('\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, '\n\n')
     torch.cuda.empty_cache()
     
     #val
@@ -185,7 +183,7 @@ for i_epoch in range(epoch):
         
         if val_i_batch % (print_freq * accumulation_steps) == 0:
             loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
-    print('='*10, '\n\nepoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n\n', '='*10) #'val_loss:', val_losses/val_ns, 
+    print('epoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n') #'val_loss:', val_losses/val_ns, 
     if val_accs/val_ns > last_val_accs:
         last_val_accs = val_accs/val_ns
         torch.save(model.state_dict(), save_path)
