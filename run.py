@@ -132,9 +132,60 @@ except BaseException:
     last_val_accs = 0
 
 for i_epoch in range(epoch):
+    model.train()
+    i_batch = 0
+    losses = 0
+    accs = 0
+    ns = 0
+    loader = tqdm(train_loader)
+    loader.set_description('train')
+    for batch in loader:
+        i_batch+=1
+        batch = {k:batch[k].to(model.device) for k in batch}
+        labels = batch.pop('Class')
+        out = model(**batch, labels=labels)
+        logits = out.logits
+        pred = logits.argmax(axis=1).to('cpu').detach()
+        accs += sum(pred == labels.to('cpu').detach()).double()
+        ns += len(pred)
+
+        loss = out.loss
+        losses += loss.to('cpu').detach()
+        (loss / accumulation_steps).backward()
+        
+        if (i_batch % accumulation_steps == 0) or (i_batch == len(loader)):
+            optimizer.step()
+            optimizer.zero_grad()
+            
+        if i_batch % (print_freq * accumulation_steps) == 0:
+            loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
+    scheduler.step()
+    torch.cuda.empty_cache()
     
-    if 1: #val_accs/val_ns > last_val_accs
-        #last_val_accs = val_accs/val_ns
+    #val
+    model.eval()
+    val_i_batch = 0
+    val_losses = 0
+    val_accs = 0
+    val_ns = 0    
+    loader = tqdm(val_loader)
+    loader.set_description('val')
+    for batch in loader:
+        val_i_batch+=1
+        batch = {k:batch[k].to(model.device) for k in batch}
+        labels = batch.pop('Class')
+
+        out = model(**batch) #, labels=labels
+        logits = out.logits.to('cpu')
+        pred = logits.argmax(axis=1)
+        val_accs += torch.sum((pred == labels.to('cpu')).double())
+        val_ns += len(pred)
+        
+        if val_i_batch % (print_freq * accumulation_steps) == 0:
+            loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
+    print('epoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n') #'val_loss:', val_losses/val_ns, 
+    if val_accs/val_ns > last_val_accs: 
+        last_val_accs = val_accs/val_ns
         torch.save(model.state_dict(), save_path)
         print('model saved')
     
