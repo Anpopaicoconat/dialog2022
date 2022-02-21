@@ -58,7 +58,7 @@ class Metric: # metric class for storing metrics (accuracy, loss)
             self.storage[key] = np.mean(self.storage[key])
         return self.storage.items()
 
-epoch = 3
+epoch = 5
 print_freq = 1
 batch_size = 1
 max_len = 256
@@ -73,13 +73,20 @@ val = pd.read_csv(data_dir + 'val.csv')
 le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
+model_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 
-tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
-tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+#gpt
+#tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
+#tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+#model = transformers.GPT2ForSequenceClassification.from_pretrained('ru_gpt_large', num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
+#model.resize_token_embeddings(len(tokenizer))
+#model.config.pad_token_id = tokenizer.pad_token_id
+#robert
+model_name = "ruRoberta-large"
+model_path = models_dir+model_name
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = model = transformers.RobertaForSequenceClassification().from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
 
-model = transformers.GPT2ForSequenceClassification.from_pretrained('ru_gpt_large', num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
-model.resize_token_embeddings(len(tokenizer))
-model.config.pad_token_id = tokenizer.pad_token_id
 model.to(device)
 
 lr = 5e-5
