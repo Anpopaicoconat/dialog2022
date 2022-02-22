@@ -62,7 +62,7 @@ epoch = 5
 print_freq = 1
 batch_size = 1
 max_len = 256
-accumulation_steps = 128
+accumulation_steps = 32
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir='multi/'
@@ -90,7 +90,7 @@ model = model = transformers.RobertaForSequenceClassification.from_pretrained(mo
 
 model.to(device)
 
-lr = 5e-5
+lr = 2e-5
 #UNFREEZE_LAST_N = 0
 #for param in list(model.parameters())[:-1]:
 #    param.requires_grad = False
@@ -120,13 +120,13 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=F
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
 
 t_total = len(train_loader) // accumulation_steps
-scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
+scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=1, num_training_steps=t_total)
 
 save_path = save_dir+model_name+'.pth'
 try:
     model.load_state_dict(torch.load(model_name)) 
     print('load:', save_path)
-    last_val_accs = 0
+    last_val_accs = 0.5834
 except BaseException:
     print('new:', save_path)
     last_val_accs = 0
