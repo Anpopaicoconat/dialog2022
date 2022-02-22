@@ -127,7 +127,8 @@ try:
     model.load_state_dict(torch.load(model_name)) 
     print('load:', save_path)
     last_val_accs = 0.5834
-except BaseException:
+except BaseException as e:
+    print(e)
     print('new:', save_path)
     last_val_accs = 0
 
