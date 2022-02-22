@@ -122,7 +122,7 @@ print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loa
 t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=1, num_training_steps=t_total)
 
-save_path = save_dir+model_name+'.pt'
+save_path = save_dir
 try:
     model.load_state_dict(torch.load(model_name)) 
     print('load:', save_path)
