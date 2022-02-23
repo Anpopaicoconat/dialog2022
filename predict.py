@@ -92,7 +92,7 @@ def predict(x_loader, df, out_name='out.csv'):
     predicts_pd.to_csv(out_name, index=False)
 
 print_freq = 1
-batch_size = 8
+batch_size = 1
 max_len = 256
 
 
