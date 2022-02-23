@@ -62,7 +62,7 @@ def predict(x_loader, df, out_name='out.csv'):
     accs = 0
     ns = 0  
     preds = []
-    logits = None
+    logits = []
     loader = tqdm(x_loader)
     loader.set_description('val')
     for batch in loader:
@@ -71,13 +71,9 @@ def predict(x_loader, df, out_name='out.csv'):
         with torch.no_grad():
             logit = model(**batch).logits
             pred = logit.argmax(axis=1)
-            print(logit, pred)
         if labels.size()[1] > 0:
             accs += torch.sum((pred == labels).double())
-        if logits.any():
-            logits+=logit.cpu().numpy()
-        else:
-            logits = logit.cpu().numpy()
+        logits.append(logit.cpu().numpy())
         preds.append(pred.cpu().numpy())
         ns += len(pred)
         loader.set_postfix({'val_acc': (accs/ns)})
