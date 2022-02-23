@@ -63,10 +63,19 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 32
+lr = 5e-5
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#data_dir='multi/'
-data_dir='bi/'
+
+data_dir='bi/' #'multi/'
+models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
+model_name = "ruRoberta-large"
+model_path = models_dir+model_name
+save_dir = 'save/'
+load_name = 'multi-ruRoberta-large.pt'
+load_path = save_dir+load_name
+save_name = 'bi-ruRoberta-large.pt'
+save_path = save_dir+save_name
+
 train = pd.read_csv(data_dir + 'train.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
@@ -74,41 +83,6 @@ val = pd.read_csv(data_dir + 'val.csv')
 le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
-models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
-save_dir = 'save/'
-
-#gpt
-#tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
-#tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-#model = transformers.GPT2ForSequenceClassification.from_pretrained('ru_gpt_large', num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
-#model.resize_token_embeddings(len(tokenizer))
-#model.config.pad_token_id = tokenizer.pad_token_id
-#robert
-model_name = "ruRoberta-large"
-model_path = models_dir+model_name
-tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path)
-model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
-
-model.to(device)
-
-lr = 5e-5
-#UNFREEZE_LAST_N = 0
-#for param in list(model.parameters())[:-1]:
-#    param.requires_grad = False
-#for i, m in enumerate(model.transformer.h):        
-    #Only un-freeze the last n transformer blocks
-#    if i+1 > len(model.transformer.h) - UNFREEZE_LAST_N:
-#        print("un-freeze block number {} ".format(i+1))
-#        for parameter in m.parameters():
-#            parameter.requires_grad = True 
-
-#for parameter in model.transformer.ln_f.parameters():        
-#    parameter.requires_grad = True
-
-optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
-                               lr = lr, # default is 5e-5, our notebook had 2e-5
-                               eps = 1e-8 # default is 1e-8.
-                               )
 
 train = TextDataset(train, le=le)
 val = TextDataset(val, le=le)
@@ -120,24 +94,51 @@ val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=Fal
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
 
+if model_name == 'rugpt2large':
+    tokenizer = transformers.GPT2Tokenizer.from_pretrained(model_path, local_files_only=True) #sberbank-ai/rugpt2large
+    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    model = transformers.GPT2ForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True) #sberbank-ai/rugpt2large
+    model.resize_token_embeddings(len(tokenizer))
+    model.config.pad_token_id = tokenizer.pad_token_id
+    
+    UNFREEZE_LAST_N = 0
+    for param in list(model.parameters())[:-1]:
+        param.requires_grad = False
+    for i, m in enumerate(model.transformer.h):        
+        #Only un-freeze the last n transformer blocks
+        if i+1 > len(model.transformer.h) - UNFREEZE_LAST_N:
+            print("un-freeze block number {} ".format(i+1))
+            for parameter in m.parameters():
+                parameter.requires_grad = True 
+    for parameter in model.transformer.ln_f.parameters():        
+        parameter.requires_grad = True
+        
+elif model_name == 'ruRoberta-large':
+    model_path = models_dir+model_name
+    tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path, local_files_only=True)
+    model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
+    
+elif model_name == 'ruBert-large':
+    pass
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
+                               lr = lr, # default is 5e-5, our notebook had 2e-5
+                               eps = 1e-8 # default is 1e-8.
+                               )
+
 t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
 
-save_path = save_dir+model_name+'.pt'
 try:
-    model.load_state_dict(torch.load(save_path)) 
-    print('load:', save_path)
+    model.load_state_dict(torch.load(load_path)) 
+    print('load:', load_path)
     last_val_accs = 0.5834
 except BaseException as e:
     print(e)
-    try:
-        print(torch.load(save_path).keys())
-        print(model)
-        model.transformer.load_state_dict(torch.load('save/multi-ruRoberta-large.pt')) 
-        print('load:', save_path)
-        last_val_accs = 0.5834
-    except BaseException as e:
-        print(e)
+    print(torch.load(load_path).keys)
     print('new:', save_path)
     last_val_accs = 0
 
@@ -196,7 +197,7 @@ for i_epoch in range(epoch):
     print('epoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n') #'val_loss:', val_losses/val_ns, 
     if val_accs/val_ns > last_val_accs: 
         last_val_accs = val_accs/val_ns
-        torch.save(model.state_dict(), 'save/bi-ruRoberta-large.pt')
+        torch.save(model.state_dict(), save_path)
         print('model saved')
     
     
