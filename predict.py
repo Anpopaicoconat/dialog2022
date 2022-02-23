@@ -71,6 +71,7 @@ def predict(x_loader, df, out_name='out.csv'):
         with torch.no_grad():
             logit = model(**batch).logits
             pred = logit.argmax(axis=1)
+            print(logit, pred)
         if labels.size()[1] > 0:
             accs += torch.sum((pred == labels).double())
         if logits:
@@ -85,9 +86,7 @@ def predict(x_loader, df, out_name='out.csv'):
     preds = pd.DataFrame(le.inverse_transform(preds), columns=['Class'])
     logits = pd.DataFrame(logits, columns=le.classes_)
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
-    #predicts_pd.columns = ['Id', 'Class']
     logits_pd = pd.concat([df['Id'], logits], axis=1, ignore_index=True)
-    #logits_pd.columns = ['Id', 'logits']
     predicts_pd.to_csv(out_name, index=False)
     predicts_pd.to_csv('logits_'+out_name, index=False)
 
