@@ -88,7 +88,7 @@ def predict(x_loader, df, out_name='out.csv'):
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
     logits_pd = pd.concat([df['Id'], logits], axis=1, ignore_index=True)
     predicts_pd.to_csv(out_name, index=False)
-    predicts_pd.to_csv('logits_'+out_name, index=False)
+    logits_pd.to_csv('logits_'+out_name, index=False)
 
 print_freq = 1
 batch_size = 8
