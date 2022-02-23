@@ -118,10 +118,10 @@ collate_fn = collate_class(padding='max_length', max_length=max_len, truncation=
 train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
+print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), print(le.classes_)
 
 t_total = len(train_loader) // accumulation_steps
-scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=1, num_training_steps=t_total)
+scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
 
 save_path = save_dir+model_name+'.pt'
 try:
@@ -130,6 +130,10 @@ try:
     last_val_accs = 0.5834
 except BaseException as e:
     print(e)
+    try:
+        model.transformer.load_state_dict(torch.load(save_path)) 
+        print('load:', save_path)
+        last_val_accs = 0.5834
     print('new:', save_path)
     last_val_accs = 0
 
