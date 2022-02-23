@@ -91,7 +91,7 @@ model = model = transformers.RobertaForSequenceClassification.from_pretrained(mo
 
 model.to(device)
 
-lr = 2e-5
+lr = 5e-5
 #UNFREEZE_LAST_N = 0
 #for param in list(model.parameters())[:-1]:
 #    param.requires_grad = False
