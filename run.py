@@ -65,7 +65,8 @@ max_len = 256
 accumulation_steps = 32
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-data_dir='multi/'
+#data_dir='multi/'
+data_dir='bi/'
 train = pd.read_csv(data_dir + 'train.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
@@ -187,7 +188,7 @@ for i_epoch in range(epoch):
     print('epoch', i_epoch, '\nloss:', losses/ns, 'acc:', accs/ns, 'val_acc:', val_accs/val_ns, '\n') #'val_loss:', val_losses/val_ns, 
     if val_accs/val_ns > last_val_accs: 
         last_val_accs = val_accs/val_ns
-        torch.save(model.state_dict(), save_path)
+        torch.save(model.state_dict(), 'save/bi-ruRoberta-large.pt')
         print('model saved')
     
     
