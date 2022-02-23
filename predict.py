@@ -66,8 +66,6 @@ def predict(x_loader, df, out_name='out.csv'):
     loader = tqdm(x_loader)
     loader.set_description('val')
     for batch in loader:
-        if ns >100:
-            break
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         with torch.no_grad():
