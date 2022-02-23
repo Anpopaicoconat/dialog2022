@@ -138,7 +138,7 @@ try:
     last_val_accs = 0.5834
 except BaseException as e:
     print(e)
-    print(torch.load(load_path)['roberta'].keys())
+    print(torch.load(load_path).keys())
     print('new:', save_path)
     last_val_accs = 0
 
