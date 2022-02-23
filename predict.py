@@ -82,7 +82,6 @@ def predict(x_loader, df, out_name='out.csv'):
             val_ns += len(pred)
 
             loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
-        else: print(labels)
 
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
     predicts_pd.columns = ['Id', 'Class']
