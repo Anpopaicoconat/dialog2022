@@ -66,6 +66,8 @@ def predict(x_loader, df, out_name='out.csv'):
     loader = tqdm(x_loader)
     loader.set_description('val')
     for batch in loader:
+        if ns >100:
+            break
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         with torch.no_grad():
@@ -78,6 +80,7 @@ def predict(x_loader, df, out_name='out.csv'):
         ns += len(pred)
         loader.set_postfix({'val_acc': (accs/ns)})
     preds = np.concatenate(preds)
+    logits = np.concatenate(logits)
     preds = pd.DataFrame(le.inverse_transform(preds), columns=['Class'])
     logits = pd.DataFrame(logits, columns=le.classes_)
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
