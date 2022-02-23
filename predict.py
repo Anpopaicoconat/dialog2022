@@ -78,7 +78,7 @@ def predict(x_loader, df, out_name='out.csv'):
         if logits:
             logits += logit.cpu().detach().numpy()
         else:
-            logits = logit
+            logits = logit.cpu().detach().numpy()
             
         pred = logit.argmax(axis=1)
         if preds:
