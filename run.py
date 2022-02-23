@@ -133,7 +133,7 @@ except BaseException as e:
     try:
         print(torch.load(save_path).keys())
         print(model)
-        model.transformer.load_state_dict(torch.load(save_path)) 
+        model.transformer.load_state_dict(torch.load('save/multi-ruRoberta-large.pt')) 
         print('load:', save_path)
         last_val_accs = 0.5834
     except BaseException as e:
