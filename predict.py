@@ -74,7 +74,7 @@ def predict(x_loader, df, out_name='out.csv'):
 
         out = model(**batch) #, labels=labels
         logit = out.logits.to('cpu')
-        logits += append(logit.cpu().detach().numpy()
+        logits += logit.cpu().detach().numpy()
         pred = logit.argmax(axis=1)
         preds += pred.cpu().detach().numpy()
         if labels.any():
