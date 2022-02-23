@@ -83,8 +83,8 @@ def predict(x_loader, df, out_name='out.csv'):
 
             loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
         break
-    preds = df.DataFrame(preds, column=['Class'])
-    logits = df.DataFrame(logits, column=['logits'])
+    preds = pd.DataFrame(preds, column=['Class'])
+    logits = pd.DataFrame(logits, column=['logits'])
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
     #predicts_pd.columns = ['Id', 'Class']
     logits_pd = pd.concat([df['Id'], logits], axis=1, ignore_index=True)
