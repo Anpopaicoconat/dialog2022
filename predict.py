@@ -77,10 +77,12 @@ def predict(x_loader, df, out_name='out.csv'):
         logits.append(logit.cpu().detach().numpy())
         pred = logit.argmax(axis=1)
         preds.append(pred.cpu().detach())
-        val_accs += torch.sum((pred == labels.to('cpu')).double())
-        val_ns += len(pred)
-        
-        loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
+        print(preds)
+        if labels:
+            val_accs += torch.sum((pred == labels.to('cpu')).double())
+            val_ns += len(pred)
+
+            loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
 
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
     predicts_pd.columns = ['Id', 'Class']
