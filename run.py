@@ -62,7 +62,7 @@ epoch = 5
 print_freq = 1
 batch_size = 1
 max_len = 256
-accumulation_steps = 32
+accumulation_steps = 128
 lr = 5e-5
 
 
@@ -131,18 +131,20 @@ optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameter
 
 t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
+
 state_dict = torch.load(load_path)
 state_dict.pop('classifier.out_proj.weight')
 state_dict.pop('classifier.out_proj.bias')
 try:
     model.load_state_dict(state_dict, strict=False) 
-    print('load:', load_path)
     last_val_accs = 0.5834
+    print('load:', load_path, 'last_acc:', last_val_accs)
+    print('new:', save_path)
 except BaseException as e:
     print(e)
-    print(state_dict.keys())
-    print('new:', save_path)
     last_val_accs = 0
+    print('create new model.' 'last_acc:', last_val_accs)
+    print('new:', save_path)
 
 for i_epoch in range(epoch):
     model.train()
