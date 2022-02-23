@@ -87,7 +87,7 @@ def predict(x_loader, df, out_name='out.csv'):
     logits_pd.to_csv('logits_'+out_name, index=False)
 
 print_freq = 1
-batch_size = 32
+batch_size = 64
 max_len = 256
 
 
