@@ -87,7 +87,7 @@ save_dir = 'save/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path)
-model = model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
+model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
 
 model.to(device)
 
