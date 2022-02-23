@@ -69,9 +69,14 @@ def predict(x_loader, df, out_name='out.csv'):
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
         with torch.no_grad():
-            pred = model(**batch).logits.argmax(axis=1)
+            logit = model(**batch).logits
+            pred = logit.argmax(axis=1)
         if labels.size()[1] > 0:
             accs += torch.sum((pred == labels).double())
+        if logits:
+            logits+=logit
+        else:
+            logits = logits
         preds.append(pred.cpu().numpy())
         ns += len(pred)
         loader.set_postfix({'val_acc': (accs/ns)})
