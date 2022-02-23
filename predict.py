@@ -79,9 +79,8 @@ def predict(x_loader, df, out_name='out.csv'):
         preds.append(pred.cpu().detach().numpy())
         val_accs += torch.sum((pred == labels.to('cpu')).double())
         val_ns += len(pred)
-
-        if val_i_batch % (print_freq * accumulation_steps) == 0:
-            loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
+        
+        loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
 
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
     predicts_pd.columns = ['Id', 'Class']
@@ -90,9 +89,9 @@ def predict(x_loader, df, out_name='out.csv'):
     predicts_pd.to_csv(out_name, index=False)
 
 print_freq = 1
-batch_size = 1
+batch_size = 2
 max_len = 256
-accumulation_steps = 32
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 data_dir='multi/'
@@ -139,4 +138,4 @@ model.load_state_dict(torch.load(save_path))
 print('load:', save_path)
 last_val_accs = 0.5834
 
-predict(val_loader, val, out_name='roberta-multi.csv')
+predict(test_loader, test, out_name='roberta-multi.csv')
