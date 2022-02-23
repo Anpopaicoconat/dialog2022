@@ -58,8 +58,7 @@ class Metric: # metric class for storing metrics (accuracy, loss)
             self.storage[key] = np.mean(self.storage[key])
         return self.storage.items()
     
-def predict(x_loader, df, out_name='out.csv):
-    model.eval()
+def predict(x_loader, df, out_name='out.csv'):
     val_i_batch = 0
     val_losses = 0
     val_accs = 0
@@ -120,6 +119,7 @@ tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path)
 model = model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
 
 model.to(device)
+model.eval()
 
 trainset = TextDataset(train, le=le)
 valset = TextDataset(val, le=le)
