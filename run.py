@@ -131,6 +131,8 @@ try:
 except BaseException as e:
     print(e)
     try:
+        print(torch.load(save_path).keys())
+        print(model)
         model.transformer.load_state_dict(torch.load(save_path)) 
         print('load:', save_path)
         last_val_accs = 0.5834
