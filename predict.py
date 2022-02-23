@@ -139,4 +139,4 @@ model.load_state_dict(torch.load(save_path))
 print('load:', save_path)
 last_val_accs = 0.5834
 
-predict(val_loader, va_test, out_name='roberta-multi.csv')
+predict(val_loader, val, out_name='roberta-multi.csv')
