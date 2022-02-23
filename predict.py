@@ -59,38 +59,24 @@ class Metric: # metric class for storing metrics (accuracy, loss)
         return self.storage.items()
     
 def predict(x_loader, df, out_name='out.csv'):
-    val_i_batch = 0
-    val_losses = 0
-    val_accs = 0
-    val_ns = 0  
+    accs = 0
+    ns = 0  
     preds = []
     logits = None
     loader = tqdm(x_loader)
     loader.set_description('val')
     for batch in loader:
-        val_i_batch+=1
         batch = {k:batch[k].to(model.device) for k in batch}
         labels = batch.pop('Class')
-
-        out = model(**batch) #, labels=labels
-        
-        logit = out.logits.to('cpu')
-        if logits:
-            logits += logit.cpu().detach().numpy()
-        else:
-            logits = logit.cpu().detach().numpy()
-            
-        pred = logit.argmax(axis=1)
-        if preds:
-            preds += pred.cpu().detach().numpy()
-        else:
-            preds = pred
-        if labels.any():
-            val_accs += torch.sum((pred == labels.to('cpu')).double())
-            val_ns += len(pred)
-
-            loader.set_postfix({'val_acc': (val_accs/val_ns).item()})
+        with torch.no_grad():
+            pred = model(batch).logits.argmax(axis=1)
+        if labels.size()[1] > 0:
+            accs += torch.sum((pred == labels).double())
+        preds.append(pred.cpu().numpy())
+        ns += len(pred)
+        loader.set_postfix({'val_acc': (accs/ns).item()})
         break
+    preds = np.concatenate(preds)
     preds = pd.DataFrame(le.inverse_transform(preds), columns=['Class'])
     logits = pd.DataFrame(logits, columns=le.classes_)
     predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
