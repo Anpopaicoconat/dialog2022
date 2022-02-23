@@ -76,7 +76,7 @@ def predict(x_loader, df, out_name='out.csv'):
         logit = out.logits.to('cpu')
         logits.append(logit.cpu().numpy())
         pred = logit.argmax(axis=1)
-        preds.append(pred.cpu().numpy())
+        preds.append(pred.cpu().detach().numpy())
         val_accs += torch.sum((pred == labels.to('cpu')).double())
         val_ns += len(pred)
 
