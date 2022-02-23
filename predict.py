@@ -89,7 +89,7 @@ def predict(x_loader, df, out_name='out.csv'):
     predicts_pd.to_csv(out_name, index=False)
 
 print_freq = 1
-batch_size = 2
+batch_size = 8
 max_len = 256
 
 
@@ -130,7 +130,7 @@ val_loader = torch.utils.data.DataLoader(valset, batch_size=batch_size, shuffle=
 test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader))
 
-t_total = len(train_loader) // accumulation_steps
+t_total = len(train_loader)
 
 save_path = save_dir+model_name+'.pt'
 
