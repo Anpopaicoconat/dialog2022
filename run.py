@@ -131,14 +131,16 @@ optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameter
 
 t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
-
+state_dict = torch.load(load_path)
+state_dict.pop('classifier.out_proj.weight')
+state_dict.pop('classifier.out_proj.bias')
 try:
-    model.load_state_dict(torch.load(load_path), strict=False) 
+    model.load_state_dict(state_dict, strict=False) 
     print('load:', load_path)
     last_val_accs = 0.5834
 except BaseException as e:
     print(e)
-    print(torch.load(load_path).keys()[:-2])
+    print(state_dict.keys())
     print('new:', save_path)
     last_val_accs = 0
 
