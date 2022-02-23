@@ -89,7 +89,7 @@ val = TextDataset(val, le=le)
 test = TextDataset(test, le=le)
 
 collate_fn = collate_class(padding='max_length', max_length=max_len, truncation=True)
-train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
