@@ -77,7 +77,7 @@ def predict(x_loader, df, out_name='out.csv'):
         if logits:
             logits+=logit.cpu().numpy()
         else:
-            logits = logits.cpu().numpy()
+            logits = logit.cpu().numpy()
         preds.append(pred.cpu().numpy())
         ns += len(pred)
         loader.set_postfix({'val_acc': (accs/ns)})
