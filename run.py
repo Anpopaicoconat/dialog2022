@@ -133,7 +133,7 @@ t_total = len(train_loader) // accumulation_steps
 scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
 
 try:
-    model.roberta.load_state_dict(torch.load(load_path)['roberta']) 
+    model.load_state_dict(torch.load(load_path).pop('classifier.out_proj.weight')) 
     print('load:', load_path)
     last_val_accs = 0.5834
 except BaseException as e:
