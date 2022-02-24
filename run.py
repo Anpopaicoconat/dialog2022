@@ -19,13 +19,13 @@ lr = 2e-5
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
-models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
-model_name = "rubert"
+models_dir = 'models/'
+model_name = "ruBert-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'bi-rubert.pt'
+load_name = 'bi-ruBert-large.pt'
 load_path = save_dir+load_name
-save_name = 'bi-rubert.pt'
+save_name = 'bi-ruBert-large.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
@@ -63,7 +63,7 @@ elif model_name == 'ruRoberta-large':
     tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path, local_files_only=True)
     model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
     
-elif model_name == 'rubert':
+elif model_name == 'ruBert-large':
     tokenizer = transformers.BertTokenizer.from_pretrained(model_path, local_files_only=True)
     model = transformers.BertForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
 
@@ -77,7 +77,7 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=F
 
 optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                                lr = lr, # default is 5e-5, our notebook had 2e-5
-                               eps = 1e-8 # default is 1e-8.
+                               eps = 1e-6 # default is 1e-8.
                                )
 
 t_total = len(train_loader) // accumulation_steps
