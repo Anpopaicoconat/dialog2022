@@ -71,9 +71,9 @@ models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'multi-ruRoberta-large.pt'
+load_name = ''
 load_path = save_dir+load_name
-save_name = 'bi-ruRoberta-large.pt'
+save_name = 'multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
@@ -137,12 +137,12 @@ state_dict.pop('classifier.out_proj.weight')
 state_dict.pop('classifier.out_proj.bias')
 try:
     model.load_state_dict(state_dict, strict=False) 
-    last_val_accs = 0.5834
+    last_val_accs = 0.58532
     print('load:', load_path, 'last_acc:', last_val_accs)
     print('new:', save_path)
 except BaseException as e:
     print(e)
-    last_val_accs = 0
+    last_val_accs = 0.58532
     print('create new model.' 'last_acc:', last_val_accs)
     print('new:', save_path)
 
