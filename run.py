@@ -18,14 +18,14 @@ accumulation_steps = 128
 lr = 5e-5
 
 
-data_dir= 'multi/' #'bi/' #'multi/'
+data_dir= 'bi/' #'bi/' #'multi/'
 models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = ''
+load_name = 'multi-ruRoberta-large.pt'
 load_path = save_dir+load_name
-save_name = 'multi-ruRoberta-large.pt'
+save_name = 'bi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
