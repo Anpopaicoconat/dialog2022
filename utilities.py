@@ -19,7 +19,7 @@ class collate_class():
     def __call__(self, input_data):
         texts, labels = zip(*input_data)
         labels = torch.LongTensor(labels)
-        inputs = self.tokenizer(texts, return_tensors='pt', padding=True, max_length=self.max_length, truncation=True) #padding=self.padding, truncation=self.truncation
+        inputs = self.tokenizer(texts, return_tensors='pt', padding=self.padding, max_length=self.max_length, truncation=self.truncation) 
         inputs['Class'] = labels
         return inputs
 
