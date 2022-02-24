@@ -14,8 +14,8 @@ epoch = 5
 print_freq = 1
 batch_size = 1
 max_len = 256
-accumulation_steps = 32
-lr = 5e-5
+accumulation_steps = 64
+lr = 2e-5
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
@@ -158,9 +158,4 @@ for i_epoch in range(epoch):
         torch.save(model.state_dict(), save_path)
         print('model saved')
     
-    lr = lr/1.5
-    optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
-                               lr = lr, # default is 5e-5, our notebook had 2e-5
-                               eps = 1e-8 # default is 1e-8.
-                               )
     
