@@ -70,7 +70,7 @@ elif model_name == 'ruBert-large':
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-collate_fn = collate_class(tokenizer = tokenizer, padding='max_leng', max_length=max_len, truncation=True)
+collate_fn = collate_class(tokenizer = tokenizer, padding='max_length', max_length=max_len, truncation=True)
 train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
