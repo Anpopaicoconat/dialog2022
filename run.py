@@ -15,7 +15,7 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 128
-lr = 5e-5
+lr = 2e-5
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
@@ -23,7 +23,7 @@ models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'multi-ruRoberta-large.pt'
+load_name = 'bi-ruRoberta-large.pt'
 load_path = save_dir+load_name
 save_name = 'bi-ruRoberta-large.pt'
 save_path = save_dir+save_name
@@ -73,7 +73,6 @@ collate_fn = collate_class(tokenizer = tokenizer, padding='max_length', max_leng
 train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
 
 optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                                lr = lr, # default is 5e-5, our notebook had 2e-5
@@ -89,14 +88,16 @@ try:
     state_dict.pop('classifier.out_proj.bias')
     model.load_state_dict(state_dict, strict=False) 
     
-    last_val_accs = 0.58532
-    print('load:', load_path, 'last_acc:', last_val_accs)
+    last_val_accs = 0.78
+    print('\nload:', load_path, 'last_acc:', last_val_accs)
     print('new:', save_path)
 except BaseException as e:
     print(e)
     last_val_accs = 0.58532
     print('create new model.' 'last_acc:', last_val_accs)
     print('new:', save_path)
+    
+print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
 
 for i_epoch in range(epoch):
     model.train()
