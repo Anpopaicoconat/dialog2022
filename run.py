@@ -124,10 +124,10 @@ for i_epoch in range(epoch):
         if (i_batch % accumulation_steps == 0) or (i_batch == len(loader)):
             optimizer.step()
             optimizer.zero_grad()
+            scheduler.step()
             
         if i_batch % (print_freq * accumulation_steps) == 0:
             loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
-    scheduler.step()
     torch.cuda.empty_cache()
     
     #val
