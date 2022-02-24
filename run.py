@@ -66,7 +66,7 @@ accumulation_steps = 128
 lr = 5e-5
 
 
-data_dir='bi/' #'multi/'
+data_dir= 'multi/' #'bi/' #'multi/'
 models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
