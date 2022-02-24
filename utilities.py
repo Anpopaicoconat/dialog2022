@@ -10,7 +10,8 @@ from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
 
 class collate_class():
-    def __init__(self, padding='max_length', max_length=256, truncation=True):
+    def __init__(self, tokenizer, padding='max_length', max_length=256, truncation=True):
+        self.tokenizer = tokenizer
         self.padding = padding
         self.max_length = max_length
         self.truncation = truncation
@@ -18,7 +19,7 @@ class collate_class():
     def __call__(self, input_data):
         texts, labels = zip(*input_data)
         labels = torch.LongTensor(labels)
-        inputs = tokenizer(texts, return_tensors='pt', padding=self.padding, max_length=self.max_length, truncation=self.truncation)
+        inputs = self.tokenizer(texts, return_tensors='pt', padding=self.padding, max_length=self.max_length, truncation=self.truncation)
         inputs['Class'] = labels
         return inputs
 
