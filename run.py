@@ -98,7 +98,7 @@ except BaseException as e:
     print('new:', save_path)
     
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
-
+print('lr:', lr, 'accumulation_steps', accumulation_steps)
 for i_epoch in range(epoch):
     model.train()
     i_batch = 0
