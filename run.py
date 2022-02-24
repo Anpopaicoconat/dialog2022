@@ -15,7 +15,7 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 128
-lr = 1e-6
+lr = 1e-4
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
