@@ -20,12 +20,12 @@ lr = 1e-7
 
 data_dir= 'bi/' #'bi/' #'multi/'
 models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
-model_name = "ruRoberta-large"
+model_name = "rubert"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'bi-ruRoberta-large.pt'
+load_name = 'bi-rubert.pt'
 load_path = save_dir+load_name
-save_name = 'bi-ruRoberta-large.pt'
+save_name = 'bi-rubert.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
@@ -63,8 +63,9 @@ elif model_name == 'ruRoberta-large':
     tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path, local_files_only=True)
     model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
     
-elif model_name == 'ruBert-large':
-    pass
+elif model_name == 'rubert':
+    tokenizer = transformers.BertTokenizer.from_pretrained(model_path, local_files_only=True)
+    model = transformers.BertForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -93,7 +94,7 @@ try:
     print('new:', save_path)
 except BaseException as e:
     print(e)
-    last_val_accs = 0.58532
+    last_val_accs = 0
     print('create new model.' 'last_acc:', last_val_accs)
     print('new:', save_path)
     
@@ -157,4 +158,9 @@ for i_epoch in range(epoch):
         torch.save(model.state_dict(), save_path)
         print('model saved')
     
+    lr = lr/1.5
+    optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
+                               lr = lr, # default is 5e-5, our notebook had 2e-5
+                               eps = 1e-8 # default is 1e-8.
+                               )
     
