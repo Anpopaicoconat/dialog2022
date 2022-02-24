@@ -84,8 +84,8 @@ scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_s
 
 try:
     state_dict = torch.load(load_path)
-    state_dict.pop('classifier.out_proj.weight')
-    state_dict.pop('classifier.out_proj.bias')
+    #state_dict.pop('classifier.out_proj.weight')
+    #state_dict.pop('classifier.out_proj.bias')
     model.load_state_dict(state_dict, strict=False) 
     
     last_val_accs = 0.78
