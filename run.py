@@ -40,12 +40,6 @@ train = TextDataset(train, le=le)
 val = TextDataset(val, le=le)
 test = TextDataset(test, le=le)
 
-collate_fn = collate_class(tokenizer = tokenizer, padding='max_length', max_length=max_len, truncation=True)
-train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
-print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
-
 if model_name == 'rugpt2large':
     tokenizer = transformers.GPT2Tokenizer.from_pretrained(model_path, local_files_only=True) #sberbank-ai/rugpt2large
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
@@ -75,6 +69,12 @@ elif model_name == 'ruBert-large':
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
+
+collate_fn = collate_class(tokenizer = tokenizer, padding='max_length', max_length=max_len, truncation=True)
+train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+val_loader = torch.utils.data.DataLoader(val, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
 
 optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                                lr = lr, # default is 5e-5, our notebook had 2e-5
