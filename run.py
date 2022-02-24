@@ -20,7 +20,7 @@ lr = 2e-5
 
 data_dir= 'bi/' #'bi/' #'multi/'
 models_dir = 'models/'
-model_name = "ruBert-large"
+model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
 load_name = 'bi-ruBert-large.pt'
