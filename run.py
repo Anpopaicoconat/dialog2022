@@ -15,7 +15,7 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 128
-lr = 1e-4
+lr = 1e-7
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
@@ -88,7 +88,7 @@ try:
     #state_dict.pop('classifier.out_proj.bias')
     model.load_state_dict(state_dict, strict=False) 
     
-    last_val_accs = 0.78
+    last_val_accs = 0.79
     print('\nload:', load_path, 'last_acc:', last_val_accs)
     print('new:', save_path)
 except BaseException as e:
