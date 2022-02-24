@@ -15,7 +15,7 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 32
-lr = 1e-7
+lr = 5e-5
 
 
 data_dir= 'bi/' #'bi/' #'multi/'
@@ -95,7 +95,7 @@ try:
 except BaseException as e:
     print(e)
     last_val_accs = 0
-    print('create new model.' 'last_acc:', last_val_accs)
+    print('\ncreate new model.', 'last_acc:', last_val_accs)
     print('new:', save_path)
     
 print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loader:', len(test_loader), le.classes_)
