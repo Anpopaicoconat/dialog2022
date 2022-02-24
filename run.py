@@ -60,7 +60,6 @@ if model_name == 'rugpt2large':
         parameter.requires_grad = True
         
 elif model_name == 'ruRoberta-large':
-    model_path = models_dir+model_name
     tokenizer = transformers.RobertaTokenizer.from_pretrained(model_path, local_files_only=True)
     model = transformers.RobertaForSequenceClassification.from_pretrained(model_path, num_labels=n_classes, local_files_only=True)
     
