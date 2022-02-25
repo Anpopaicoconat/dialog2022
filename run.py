@@ -25,7 +25,7 @@ model_path = models_dir+model_name
 save_dir = 'save/'
 load_name = ''
 load_path = save_dir+load_name
-save_name = 'multi-ruRoberta-larg'
+save_name = 'multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
