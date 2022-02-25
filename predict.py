@@ -84,7 +84,7 @@ print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loa
 
 t_total = len(train_loader)
 
-model.load_state_dict(torch.load(save_path)) 
 print('load:', save_path)
+model.load_state_dict(torch.load(save_path)) 
 
 predict(test_loader, test, out_name=save_name[:-3]+'.csv')
