@@ -52,8 +52,10 @@ val = pd.read_csv(data_dir + 'val.csv')
 le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
-models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
+models_dir = '/models/'
 save_dir = 'save/'
+save_name = 'bi-ruRoberta-large-large.pt'
+save_path = save_dir+save_name
 
 #gpt
 #tokenizer = transformers.GPT2Tokenizer.from_pretrained('ru_gpt_large', local_files_only=True)#sberbank-ai/rugpt2large
@@ -82,10 +84,7 @@ print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loa
 
 t_total = len(train_loader)
 
-save_path = save_dir+model_name+'.pt'
-
 model.load_state_dict(torch.load(save_path)) 
 print('load:', save_path)
-last_val_accs = 0.5834
 
-predict(test_loader, test, out_name='roberta-multi.csv')
+predict(test_loader, test, out_name=save_name[:-3]+'.csv')
