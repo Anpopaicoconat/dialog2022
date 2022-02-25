@@ -23,7 +23,7 @@ def predict(x_loader, df, out_name='out.csv'):
         with torch.no_grad():
             logit = model(**batch).logits
             pred = logit.argmax(axis=1)
-        if labels.size()[1] > 0:
+        if labels.size()[0] > 0:
             accs += torch.sum((pred == labels).double())
         logits.append(logit.cpu().numpy())
         preds.append(pred.cpu().numpy())
