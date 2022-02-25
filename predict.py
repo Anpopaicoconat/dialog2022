@@ -29,7 +29,6 @@ def predict(x_loader, df, out_name='out.csv'):
         preds.append(pred.cpu().numpy())
         ns += len(pred)
         loader.set_postfix({'val_acc': (accs/ns)})
-        break
     preds = np.concatenate(preds)
     logits = np.concatenate(logits)
     preds = pd.DataFrame(le.inverse_transform(preds), columns=['Class'])
