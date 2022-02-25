@@ -33,7 +33,7 @@ def predict(x_loader, df, out_name='out.csv'):
     logits = np.concatenate(logits)
     preds = pd.DataFrame(le.inverse_transform(preds), columns=['Class'])
     logits = pd.DataFrame(logits, columns=le.classes_)
-    predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True)
+    predicts_pd = pd.concat([df['Id'], preds], axis=1, ignore_index=True, columns=['Id', 'Class'])
     logits_pd = pd.concat([df['Id'], logits], axis=1, ignore_index=True)
     predicts_pd.to_csv(out_name, index=False)
     logits_pd.to_csv('logits_'+out_name, index=False)
@@ -44,7 +44,7 @@ max_len = 256
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-data_dir='bi/'
+data_dir='multi/'
 train = pd.read_csv(data_dir + 'train.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
@@ -54,7 +54,7 @@ le.fit(train['Class'].values)
 n_classes = len(le.classes_)
 models_dir = 'models/'
 save_dir = 'save/'
-save_name = 'bi-ruRoberta-large-large.pt'
+save_name = 'multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
 #gpt
