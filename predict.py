@@ -52,7 +52,7 @@ val = pd.read_csv(data_dir + 'val.csv')
 le = LabelEncoder()
 le.fit(train['Class'].values)
 n_classes = len(le.classes_)
-models_dir = '/models/'
+models_dir = 'models/'
 save_dir = 'save/'
 save_name = 'bi-ruRoberta-large-large.pt'
 save_path = save_dir+save_name
