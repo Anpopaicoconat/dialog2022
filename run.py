@@ -10,22 +10,22 @@ from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
 from utilities import collate_class, TextDataset, Metric
 
-epoch = 5
+epoch = 4
 print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 32
-lr = 5e-5
+lr = 2e-5
 
 
-data_dir= 'bi/' #'bi/' #'multi/'
+data_dir= 'multi/' #'bi/' #'multi/'
 models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
-model_name = "rubert"
+model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'bi-rubert.pt'
+load_name = ''
 load_path = save_dir+load_name
-save_name = 'bi-rubert.pt'
+save_name = 'multi-ruRoberta-larg'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
