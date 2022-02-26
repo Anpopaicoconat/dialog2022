@@ -28,7 +28,7 @@ load_path = save_dir+load_name
 save_name = '(add_val)multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
-train = pd.read_csv(data_dir + 'train.csv')
+train = pd.read_csv(data_dir + 'val.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
 
