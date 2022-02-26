@@ -10,7 +10,7 @@ from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
 from utilities import collate_class, TextDataset, Metric
 
-epoch = 5
+epoch = 10
 print_freq = 1
 batch_size = 1
 max_len = 256
@@ -156,5 +156,9 @@ for i_epoch in range(epoch):
         last_val_accs = val_accs/val_ns
         torch.save(model.state_dict(), save_path)
         print('model saved')
-    
+    lr = lr/1.5
+    optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
+                               lr = lr, # default is 5e-5, our notebook had 2e-5
+                               eps = 1e-8 # default is 1e-8.
+                               )
     
