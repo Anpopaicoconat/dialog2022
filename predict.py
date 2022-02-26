@@ -83,7 +83,7 @@ print('test_loader:', len(test_loader), 'val_loader', len(val_loader), 'test_loa
 
 t_total = len(train_loader)
 
-save_path = save_dir+'(add_val)multi-ruRoberta-large.pt'+'.pt'
+save_path = save_dir+'(add_val)multi-ruRoberta-large'+'.pt'
 
 model.load_state_dict(torch.load(save_path)) 
 print('load:', save_path)
