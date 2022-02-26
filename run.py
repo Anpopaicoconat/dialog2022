@@ -15,7 +15,7 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 32
-lr = 2e-5
+lr = 2e-5/ 1.5*4
 
 
 data_dir= 'multi/' #'bi/' #'multi/'
@@ -23,7 +23,7 @@ models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = ''
+load_name = 'multi-ruRoberta-large.pt'
 load_path = save_dir+load_name
 save_name = 'multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
@@ -81,7 +81,7 @@ optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameter
                                )
 
 t_total = len(train_loader) // accumulation_steps
-scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=t_total)
+scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=100, num_training_steps=t_total)
 
 try:
     state_dict = torch.load(load_path)
@@ -89,7 +89,7 @@ try:
     #state_dict.pop('classifier.out_proj.bias')
     model.load_state_dict(state_dict, strict=False) 
     
-    last_val_accs = 0.79
+    last_val_accs = 0.647
     print('\nload:', load_path, 'last_acc:', last_val_accs)
     print('new:', save_path)
 except BaseException as e:
