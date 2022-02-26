@@ -25,7 +25,7 @@ model_path = models_dir+model_name
 save_dir = 'save/'
 load_name = 'multi-ruRoberta-large.pt'
 load_path = save_dir+load_name
-save_name = 'multi-ruRoberta-large.pt'
+save_name = '(add_val)multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
 train = pd.read_csv(data_dir + 'train.csv')
@@ -131,6 +131,9 @@ for i_epoch in range(epoch):
             loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
     torch.cuda.empty_cache()
     
+    torch.save(model.state_dict(), save_path)
+        print('model saved')
+        
     #val
     model.eval()
     val_i_batch = 0
