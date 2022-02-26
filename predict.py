@@ -75,7 +75,7 @@ trainset = TextDataset(train, le=le)
 valset = TextDataset(val, le=le)
 testset = TextDataset(test, le=le)
 
-collate_fn = collate_class(padding='max_length', max_length=max_len, truncation=True)
+collate_fn = collate_class(tokenizer=tokenizer, padding='max_length', max_length=max_len, truncation=True)
 train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 val_loader = torch.utils.data.DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
