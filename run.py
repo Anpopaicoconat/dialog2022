@@ -14,16 +14,15 @@ epoch = 5
 print_freq = 1
 batch_size = 1
 max_len = 256
-accumulation_steps = 64
+accumulation_steps = 32
 lr = 2e-5
-
 
 data_dir= 'bi/' #'bi/' #'multi/'
 models_dir = 'models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
-load_name = 'bi-ruBert-large.pt'
+load_name = ''
 load_path = save_dir+load_name
 save_name = 'bi-ruBert-large.pt'
 save_path = save_dir+save_name
@@ -77,7 +76,7 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=batch_size, shuffle=F
 
 optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                                lr = lr, # default is 5e-5, our notebook had 2e-5
-                               eps = 1e-6 # default is 1e-8.
+                               eps = 1e-8 # default is 1e-8.
                                )
 
 t_total = len(train_loader) // accumulation_steps
