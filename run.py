@@ -132,7 +132,7 @@ for i_epoch in range(epoch):
     torch.cuda.empty_cache()
     
     torch.save(model.state_dict(), save_path)
-        print('model saved')
+    print('model saved')
         
     #val
     model.eval()
