@@ -15,11 +15,11 @@ print_freq = 1
 batch_size = 1
 max_len = 256
 accumulation_steps = 32
-lr = 2e-5/ (1.5*4)
+lr = 2e-5
 
 
 data_dir= 'multi/' #'bi/' #'multi/'
-models_dir = '/home/posokhov@ad.speechpro.com/projects/models/'
+models_dir = 'models/'
 model_name = "ruRoberta-large"
 model_path = models_dir+model_name
 save_dir = 'save/'
@@ -28,7 +28,7 @@ load_path = save_dir+load_name
 save_name = '(add_val)multi-ruRoberta-large.pt'
 save_path = save_dir+save_name
 
-train = pd.read_csv(data_dir + 'val.csv')
+train = pd.read_csv(data_dir + 'train.csv')
 test = pd.read_csv(data_dir + 'test.csv')
 val = pd.read_csv(data_dir + 'val.csv')
 
@@ -130,9 +130,6 @@ for i_epoch in range(epoch):
         if i_batch % (print_freq * accumulation_steps) == 0:
             loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
     torch.cuda.empty_cache()
-    
-    torch.save(model.state_dict(), save_path)
-    print('model saved')
         
     #val
     model.eval()
@@ -161,9 +158,43 @@ for i_epoch in range(epoch):
         torch.save(model.state_dict(), save_path)
         print('model saved')
     
-    lr = lr/1.5
-    optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
-                               lr = lr, # default is 5e-5, our notebook had 2e-5
-                               eps = 1e-8 # default is 1e-8.
+    lr = lr/1.5                                                                           # почему вместо умножения шагов в планировшике происходит это?
+    optimizer = transformers.AdamW(filter(lambda p: p.requires_grad, model.parameters()), # я не знаю. вероятно причина в том
+                               lr = lr, # default is 5e-5, our notebook had 2e-5          # что дописывал этот код 
+                               eps = 1e-8 # default is 1e-8.                              # я в 4 утра -___-
                                )
+
+
+for i_epoch in range(epoch):
+    model.train()
+    i_batch = 0
+    losses = 0
+    accs = 0
+    ns = 0
+    loader = tqdm(val_loader)
+    loader.set_description('train')
+    for batch in loader:
+        i_batch+=1
+        batch = {k:batch[k].to(model.device) for k in batch}
+        labels = batch.pop('Class')
+        out = model(**batch, labels=labels)
+        logits = out.logits
+        pred = logits.argmax(axis=1).to('cpu').detach()
+        accs += sum(pred == labels.to('cpu').detach()).double()
+        ns += len(pred)
+
+        loss = out.loss
+        losses += loss.to('cpu').detach()
+        (loss / accumulation_steps).backward()
+        
+        if (i_batch % accumulation_steps == 0) or (i_batch == len(loader)):
+            optimizer.step()
+            optimizer.zero_grad()
+            scheduler.step()
+            
+        if i_batch % (print_freq * accumulation_steps) == 0:
+            loader.set_postfix({'loss': (losses/ns).item(), 'acc': (accs/ns).item()})
+    torch.cuda.empty_cache()
     
+    torch.save(model.state_dict(), save_path)
+    print('model saved')
